@@ -1,19 +1,19 @@
 ---
-name: ✨ Feature request
-about: Suggest an idea or improvement
-title: "[Feature]: "
+name: Feature Request
+about: Suggest an idea or improvement for StayNest.
+title: '[Feature] '
 labels: enhancement
+assignees: ''
 ---
 
-## Problem
-What problem does this feature solve?
+## Is your feature request related to a problem?
+<!-- A clear description of the problem. e.g. "I'm always frustrated when..." -->
 
-## Proposed solution
-Describe what you want to build.
+## Describe the solution you'd like
+<!-- A clear and concise description of what you want to happen. -->
 
-## Files likely involved
-- `client/src/...`
-- `server/src/...`
+## Describe alternatives you've considered
+<!-- Any alternative solutions or features you've considered. -->
 
 ## Additional context
-Mockups, links or anything else.
+<!-- Add any other context, mockups, or screenshots about the feature request here. -->

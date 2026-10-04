@@ -1,25 +1,29 @@
 ---
-name: 🐛 Bug report
-about: Something is not working as expected
-title: "[Bug]: "
+name: Bug Report
+about: Found something that doesn't work? Help us fix it.
+title: '[Bug] '
 labels: bug
+assignees: ''
 ---
 
 ## Describe the bug
-A clear description of what the bug is.
+<!-- A clear and concise description of what the bug is. -->
 
 ## Steps to reproduce
+
 1. Go to '...'
 2. Click on '...'
 3. See error
 
-## Expected behaviour
-What you expected to happen.
+## Expected behavior
+<!-- What you expected to happen. -->
 
-## Screenshots
-If applicable, add screenshots.
+## Actual behavior
+<!-- What actually happened. Include screenshots or error messages if possible. -->
 
 ## Environment
+
 - OS:
 - Browser:
-- Node version:
+- Node.js version (if backend):
+- Steps to reproduce reliably (yes / no):
