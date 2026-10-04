@@ -79,6 +79,31 @@ label { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; colo
 .success { color: var(--success); }
 .loader { text-align: center; color: var(--muted); padding: 40px; }
 
+/* Skeleton loaders */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #ede7df 25%, #f7f3ee 50%, #ede7df 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-card {
+  pointer-events: none;
+}
+
+.skeleton-img {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+}
+
+.skeleton-line {
+  border-radius: 4px;
+}
+
 .hero-img { width: 100%; max-height: 460px; object-fit: cover; border-radius: var(--radius); margin: 16px 0; }
 .detail-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: start; }
 .detail-layout h2 { text-transform: capitalize; }
