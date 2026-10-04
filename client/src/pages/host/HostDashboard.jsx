@@ -7,13 +7,19 @@ import { formatDate, formatINR } from '../../utils/format.js';
 export default function HostDashboard() {
   const [listings, setListings] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [stats, setStats] = useState(null);
   const [error, setError] = useState('');
 
   const load = () => {
-    Promise.all([api.get('/listings/mine'), api.get('/bookings/host')])
-      .then(([l, b]) => {
+    Promise.all([
+      api.get('/listings/mine'),
+      api.get('/bookings/host'),
+      api.get('/bookings/host/stats'),
+    ])
+      .then(([l, b, s]) => {
         setListings(l.data);
         setBookings(b.data);
+        setStats(s.data);
       })
       .catch((err) => setError(getErrorMessage(err)));
   };
@@ -36,13 +42,37 @@ export default function HostDashboard() {
   if (error) return <p className="error">{error}</p>;
   if (!listings) return <Loader />;
 
-  // TODO: earnings summary cards (total earnings, upcoming check-ins, occupancy).
   return (
     <section>
       <div className="row-between">
         <h1>Host Dashboard</h1>
         <Link to="/host/listings/new" className="btn">+ New listing</Link>
       </div>
+
+      {stats && (
+        <div className="stats-grid">
+          <div className="stat-card">
+            <h3>Total Earnings</h3>
+            <p className="stat-value">{formatINR(stats.totalEarnings)}</p>
+            <span className="muted small">from completed bookings</span>
+          </div>
+          <div className="stat-card">
+            <h3>Upcoming Check-ins</h3>
+            <p className="stat-value">{stats.upcomingCheckIns}</p>
+            <span className="muted small">in next 7 days</span>
+          </div>
+          <div className="stat-card">
+            <h3>Pending Requests</h3>
+            <p className="stat-value">{stats.pendingRequests}</p>
+            <span className="muted small">awaiting confirmation</span>
+          </div>
+          <div className="stat-card">
+            <h3>Average Rating</h3>
+            <p className="stat-value">{stats.avgRating > 0 ? `★ ${stats.avgRating}` : 'N/A'}</p>
+            <span className="muted small">across all listings</span>
+          </div>
+        </div>
+      )}
 
       <h2>Booking requests</h2>
       {bookings.length === 0 && <p className="muted">No bookings yet.</p>}

@@ -68,6 +68,69 @@ export const getHostBookings = asyncHandler(async (req, res) => {
   res.json(bookings);
 });
 
+// GET /api/bookings/host/stats (host summary statistics)
+export const getHostStats = asyncHandler(async (req, res) => {
+  const myListings = await Listing.find({ host: req.user._id }).select('_id avgRating reviewCount');
+  const listingIds = myListings.map((l) => l._id);
+
+  if (listingIds.length === 0) {
+    return res.json({
+      totalEarnings: 0,
+      upcomingCheckIns: 0,
+      pendingRequests: 0,
+      avgRating: 0,
+    });
+  }
+
+  const now = new Date();
+  const inSevenDays = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+  const [bookingStats] = await Booking.aggregate([
+    {
+      $match: {
+        listing: { $in: listingIds },
+      },
+    },
+    {
+      $facet: {
+        totalEarnings: [
+          { $match: { status: 'completed' } },
+          { $group: { _id: null, total: { $sum: '$totalPrice' } } },
+        ],
+        upcomingCheckIns: [
+          {
+            $match: {
+              status: { $in: ['confirmed', 'completed'] },
+              checkIn: { $gte: now, $lte: inSevenDays },
+            },
+          },
+          { $count: 'count' },
+        ],
+        pendingRequests: [
+          { $match: { status: 'pending' } },
+          { $count: 'count' },
+        ],
+      },
+    },
+  ]);
+
+  const totalEarnings = bookingStats?.totalEarnings[0]?.total || 0;
+  const upcomingCheckIns = bookingStats?.upcomingCheckIns[0]?.count || 0;
+  const pendingRequests = bookingStats?.pendingRequests[0]?.count || 0;
+
+  const ratedListings = myListings.filter((l) => (l.reviewCount || 0) > 0);
+  const avgRating = ratedListings.length > 0
+    ? Number((ratedListings.reduce((sum, l) => sum + (l.avgRating || 0), 0) / ratedListings.length).toFixed(1))
+    : 0;
+
+  res.json({
+    totalEarnings,
+    upcomingCheckIns,
+    pendingRequests,
+    avgRating,
+  });
+});
+
 // PATCH /api/bookings/:id/cancel (guest)
 export const cancelBooking = asyncHandler(async (req, res) => {
   const booking = await Booking.findById(req.params.id);
